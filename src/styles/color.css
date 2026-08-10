@@ -10,14 +10,14 @@
   --gray-9:  light-dark(#6e685c, #5f8c8e);
   --gray-10: light-dark(#5f5a51, #76a4a2);
   --gray-11: light-dark(#4c4b44, #a6cbc0);
-  --gray-12: light-dark(#001219, #e9f4ed);
+  --gray-12: light-dark(#001219, #e9d8a6);
 
   --accent: light-dark(#005f73, #94d2bd);
   --accent-soft: light-dark(#dff2eb, #083e47);
   --accent-warm: light-dark(#9b2226, #ee9b00);
 
-  --red-9:  light-dark(#ae2012, #bb3e03);
-  --red-11: light-dark(#9b2226, #f3aa39);
+  --red-9:  light-dark(#bb3e03, #ca6702);
+  --red-11: light-dark(#ae2012, #ee9b00);
 
   --background:         var(--gray-1);
   --foreground:         var(--gray-12);

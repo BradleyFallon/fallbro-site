@@ -28,6 +28,17 @@ const writing = (await getWriting()).slice(0, 3)
     </p>
   </hero-block>
 
+  <home-banner>
+    <img
+      src={withBase("/og.png")}
+      alt=""
+      width="1200"
+      height="630"
+      decoding="async"
+      fetchpriority="high"
+    >
+  </home-banner>
+
   <section>
     <section-heading>
       <h2>Selected work</h2>
@@ -68,6 +79,7 @@ const writing = (await getWriting()).slice(0, 3)
 
 <style>
   hero-block,
+  home-banner,
   section,
   section-heading,
   toy-teaser {
@@ -100,6 +112,19 @@ const writing = (await getWriting()).slice(0, 3)
       margin-block-start: var(--space-s);
       color: var(--muted-foreground);
       font-size: var(--step-1);
+    }
+  }
+
+  home-banner {
+    overflow: hidden;
+    background: #001219;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
     }
   }
 

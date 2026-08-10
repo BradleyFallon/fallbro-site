@@ -1,0 +1,82 @@
+---
+import MetaPage from "@/components/MetaPage.astro"
+import ToyAd from "@/components/ToyAd.astro"
+import Layout from "@/layouts/Layout.astro"
+---
+
+<Layout crumbs={[{ label: "Glyph8", href: "/toys/glyph8" }]}>
+  <MetaPage
+    slot="head"
+    title="Glyph8"
+    description="An 8×8 glyph maker in development at FALLBRO."
+  />
+  <header>
+    <p>In development</p>
+    <h1>Glyph8</h1>
+    <h2>An 8×8 glyph maker.</h2>
+  </header>
+  <glyph-preview aria-label="A decorative eight by eight grid preview">
+    {Array.from({ length: 64 }, (_, index) => (
+      <span data-filled={[9, 10, 11, 17, 20, 25, 28, 33, 34, 35, 36, 41, 44, 49, 52, 58, 59].includes(index) || undefined}></span>
+    ))}
+  </glyph-preview>
+  <prose-content>
+    <p>
+      Every mark in Glyph8 is made from 64 cells, two color masks, and
+      transparency. The first version will make crisp, resolution-independent
+      SVGs without trying to become a general-purpose pixel editor.
+    </p>
+    <p>
+      The tool will live here once its standalone repository has a working first
+      version.
+    </p>
+  </prose-content>
+  <ToyAd />
+</Layout>
+
+<style>
+  header {
+    margin-block-end: var(--space-m);
+
+    > p {
+      color: var(--accent-warm);
+      font-family: var(--font-mono);
+      font-size: var(--step--1);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    h1 {
+      margin-block-start: var(--space-2xs);
+      font-size: var(--step-3);
+      font-weight: var(--font-weight-medium);
+    }
+
+    h2 {
+      color: var(--muted-foreground);
+      font-size: var(--step-1);
+      font-weight: var(--font-weight-normal);
+    }
+  }
+
+  glyph-preview {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    width: min(100%, 25rem);
+    aspect-ratio: 1;
+    margin-block: var(--space-m);
+    overflow: hidden;
+    background: var(--background);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+
+    span {
+      border: 1px solid color-mix(in oklab, var(--border) 60%, transparent);
+      background: color-mix(in oklab, var(--muted) 65%, transparent);
+
+      &[data-filled] {
+        background: var(--foreground);
+      }
+    }
+  }
+</style>

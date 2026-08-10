@@ -1,0 +1,42 @@
+---
+import MetaPage from "@/components/MetaPage.astro"
+import Layout from "@/layouts/Layout.astro"
+---
+
+<Layout crumbs={[{ label: "Privacy", href: "/privacy" }]}>
+  <MetaPage slot="head" title="Privacy" />
+  <prose-content>
+    <h1>Privacy</h1>
+    <p>
+      FALLBRO is a static website. It does not require an account and does not
+      intentionally collect personal information through the site itself.
+    </p>
+    <h2>Advertising</h2>
+    <p>
+      Interactive toy pages may eventually display compact ads served by
+      <a
+        href="https://www.buysellads.com"
+        target="_blank"
+        rel="noopener noreferrer"
+        >BuySellAds</a
+      >. Their advertising technology may process information needed to deliver
+      and measure ads. See the
+      <a
+        href="https://www.buysellads.com/privacy"
+        target="_blank"
+        rel="noopener noreferrer"
+        >BuySellAds privacy policy</a
+      >
+      for details.
+    </p>
+    <p>
+      Live third-party advertising is currently disabled. The sponsor card on
+      Glyph8 is a FALLBRO house ad and does not contact an advertising network.
+    </p>
+    <h2>Contact</h2>
+    <p>
+      Questions about this page can be sent to
+      <a href="mailto:bradley.fallon@gmail.com">bradley.fallon@gmail.com</a>.
+    </p>
+  </prose-content>
+</Layout>

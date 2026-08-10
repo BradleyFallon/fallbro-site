@@ -1,108 +1,160 @@
 ---
 import MetaPage from "@/components/MetaPage.astro"
+import ProjectCard from "@/components/ProjectCard.astro"
+import WritingCard from "@/components/WritingCard.astro"
 import Layout from "@/layouts/Layout.astro"
+import { getWriting } from "@/lib/content"
+import { withBase } from "@/lib/utils"
+import { getCollection } from "astro:content"
+
+const projects = (await getCollection("projects"))
+  .filter(({ data }) => data.featured)
+  .sort(
+    (a, b) =>
+      (b.data.startDate?.getTime() ?? 0) - (a.data.startDate?.getTime() ?? 0),
+  )
+const writing = (await getWriting()).slice(0, 3)
 ---
 
 <Layout>
   <MetaPage slot="head" />
-  <dictionary-entry>
-    <h1>er·u·dite</h1>
-    <etymology-span>
-      <ipa-span>/ˈer(y)əˌdīt/</ipa-span>
-      adj. [L. <i>ēruditus</i>, instructed, pp. of <i>ērudīre</i> to instruct,
-      polish, lit. to free from roughness, f. ē- out + <i>rudis</i> rough,
-      untrained]
-    </etymology-span>
-    <ol>
-      <li>
-        having or showing deep, wide-ranging knowledge acquired through study;
-        learned (<i>an erudite scholar</i>).
-      </li>
-      <li>
-        (of writing, speech, or argument) reflecting such knowledge; scholarly (<i
-          >an erudite footnote</i
-        >).
-      </li>
-    </ol>
-    <hr>
-    <prose-content>
-      <p>
-        astro-erudite is
-        <a href="https://enscribe.dev" target="_blank" rel="noopener noreferrer"
-          >enscribe</a
-        >'s opinionated, unstyled static blogging template built with
-        <a href="https://astro.build" target="_blank" rel="noopener noreferrer"
-          >Astro</a
-        >
-        and native CSS. astro-erudite uses no UI or CSS framework and contains
-        minimal dependencies.
+  <hero-block>
+    <p data-kicker>Bradley Fallon</p>
+    <h1>Software, experiments, writing, and strange useful things.</h1>
+    <p>
+      I’m a software engineer and creative technologist. FALLBRO is where I
+      collect practical tools, technical investigations, and small ideas worth
+      making real.
+    </p>
+  </hero-block>
+
+  <section>
+    <section-heading>
+      <h2>Selected work</h2>
+      <a href={withBase("/projects")}>All projects →</a>
+    </section-heading>
+    <ul>
+      {projects.map((project) => <ProjectCard project={project} />)}
+    </ul>
+  </section>
+
+  <section>
+    <section-heading>
+      <h2>Writing</h2>
+      <a href={withBase("/writing")}>Writing archive →</a>
+    </section-heading>
+    {writing.length > 0 ? (
+      <ul>{writing.map((entry) => <WritingCard entry={entry} />)}</ul>
+    ) : (
+      <p data-empty>
+        Longer notes are being edited. The unfinished drafts stay private until
+        they are ready.
       </p>
-      <p>
-        To use this template, check out the
-        <a
-          href="https://github.com/jktrn/astro-erudite"
-          target="_blank"
-          rel="noopener noreferrer"
-          >GitHub</a
-        >
-        repository. To learn more about why this template exists, read this blog
-        post: <a href="/blog/introducing-v2">Introducing astro-erudite v2</a>.
-      </p>
-    </prose-content>
-  </dictionary-entry>
+    )}
+  </section>
+
+  <section>
+    <section-heading>
+      <h2>Toys</h2>
+      <a href={withBase("/toys")}>Visit the toy shelf →</a>
+    </section-heading>
+    <toy-teaser>
+      <a href={withBase("/toys/glyph8")}>Glyph8</a>
+      <p>An 8×8 glyph maker built from two color masks and transparency.</p>
+      <span>In development</span>
+    </toy-teaser>
+  </section>
 </Layout>
 
 <style>
-  dictionary-entry {
+  hero-block,
+  section,
+  section-heading,
+  toy-teaser {
     display: block;
-    font-size: var(--step-0);
-    color: var(--muted-foreground);
+  }
 
-    @media (width >= 64rem) {
-      margin-block-start: -0.2em;
-    }
+  hero-block {
+    max-width: 44rem;
+    padding-block: var(--space-s) var(--space-l);
 
-    ipa-span {
-      opacity: 0.6;
+    [data-kicker] {
+      margin-block-end: var(--space-xs);
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: var(--step--1);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
     }
 
     h1 {
-      font-size: var(--step-2);
-      line-height: calc(var(--leading-offset) + 1em);
+      max-width: 17ch;
+      font-size: var(--step-4);
+      line-height: 1.05;
       font-weight: var(--font-weight-medium);
-      color: var(--foreground);
-      margin-block-end: var(--space-2xs);
+      text-wrap: balance;
     }
 
-    ol {
+    > p:last-child {
+      max-width: 58ch;
+      margin-block-start: var(--space-s);
+      color: var(--muted-foreground);
+      font-size: var(--step-1);
+    }
+  }
+
+  section {
+    margin-block-start: var(--space-xl);
+
+    ul {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-m);
+    }
+  }
+
+  section-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-s);
+    margin-block-end: var(--space-s);
+    padding-block-end: var(--space-2xs);
+    border-block-end: 1px solid var(--border);
+
+    h2 {
+      font-size: var(--step-1);
+      font-weight: var(--font-weight-medium);
+    }
+
+    a {
+      font-size: var(--step--1);
+      color: var(--muted-foreground);
+    }
+  }
+
+  [data-empty],
+  toy-teaser p {
+    color: var(--muted-foreground);
+  }
+
+  toy-teaser {
+    position: relative;
+    padding: var(--space-s);
+    background: color-mix(in oklab, var(--accent-soft) 55%, var(--background));
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+
+    > a {
+      font-size: var(--step-1);
+      font-weight: var(--font-weight-medium);
+    }
+
+    span {
+      display: inline-block;
       margin-block-start: var(--space-xs);
-      list-style: none;
-
-      li {
-        padding-inline-start: 1em;
-        text-indent: -1em;
-
-        &::before {
-          content: counter(list-item);
-          display: inline-block;
-          inline-size: 1em;
-          text-indent: 0;
-          font-weight: var(--font-weight-medium);
-        }
-
-        + li {
-          margin-block-start: var(--space-3xs);
-        }
-      }
-    }
-
-    hr {
-      margin-block: var(--space-m);
-      border-block-start: 2px solid var(--border);
-    }
-
-    prose-content {
-      margin-block-start: var(--space-xs);
+      font-size: var(--step--1);
+      color: var(--accent-warm);
     }
   }
 </style>

@@ -1,5 +1,6 @@
 ---
 import type { SvgComponent } from "astro/types"
+import { withBase } from "@/lib/utils"
 
 type Props = { links: { href: string; label: string; icon: SvgComponent }[] }
 
@@ -10,10 +11,10 @@ const { links } = Astro.props
   {links.map(({ href, label, icon: Icon }) => (
       <li>
         <a
-          href={href}
+          href={href.startsWith("/") ? withBase(href) : href}
           data-icon-button
-          target="_blank"
-          rel="noopener noreferrer"
+          target={href.startsWith("/") || href.startsWith("mailto:") ? undefined : "_blank"}
+          rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
           aria-label={label}
           title={label}
         >

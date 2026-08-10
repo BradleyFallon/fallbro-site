@@ -1,0 +1,118 @@
+---
+import ExternalIcon from "@/assets/icons/external.svg"
+import MetaPage from "@/components/MetaPage.astro"
+import Layout from "@/layouts/Layout.astro"
+import { formatDate } from "@/lib/utils"
+import { getCollection, render, type CollectionEntry } from "astro:content"
+
+export async function getStaticPaths() {
+  const projects = await getCollection("projects")
+  return projects.map((project) => ({
+    params: { id: project.id },
+    props: { project },
+  }))
+}
+
+type Props = { project: CollectionEntry<"projects"> }
+
+const { project } = Astro.props
+const { Content } = await render(project)
+const {
+  title,
+  summary,
+  status,
+  repository,
+  website,
+  startDate,
+  endDate,
+  tags,
+} = project.data
+---
+
+<Layout crumbs={[{ label: title, href: `/projects/${project.id}` }]}>
+  <MetaPage slot="head" title={title} description={summary} />
+  <article>
+    <header>
+      <p data-status>{status}</p>
+      <h1>{title}</h1>
+      <p data-summary>{summary}</p>
+      <project-meta>
+        {startDate && (
+          <span>
+            {formatDate(startDate)}
+            {endDate ? ` – ${formatDate(endDate)}` : " – Present"}
+          </span>
+        )}
+        {repository && (
+          <a href={repository} target="_blank" rel="noopener noreferrer">
+            Source <ExternalIcon aria-hidden="true" />
+          </a>
+        )}
+        {website && (
+          <a href={website} target="_blank" rel="noopener noreferrer">
+            Visit <ExternalIcon aria-hidden="true" />
+          </a>
+        )}
+      </project-meta>
+      {tags && <tag-list>{tags.map((tag) => <span>{tag}</span>)}</tag-list>}
+    </header>
+    <prose-content><Content /></prose-content>
+  </article>
+</Layout>
+
+<style>
+  header {
+    margin-block-end: var(--space-l);
+
+    [data-status] {
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: var(--step--1);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    h1 {
+      margin-block-start: var(--space-2xs);
+      font-size: var(--step-3);
+      font-weight: var(--font-weight-medium);
+    }
+
+    [data-summary] {
+      margin-block-start: var(--space-xs);
+      color: var(--muted-foreground);
+      font-size: var(--step-1);
+    }
+  }
+
+  project-meta,
+  tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin-block-start: var(--space-s);
+    font-size: var(--step--1);
+    color: var(--muted-foreground);
+
+    a {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-3xs);
+
+      svg {
+        width: 1em;
+        height: 1em;
+      }
+    }
+  }
+
+  tag-list {
+    gap: var(--space-3xs);
+
+    span {
+      padding-inline: var(--space-2xs);
+      background: var(--muted);
+      border-radius: var(--radius-full);
+    }
+  }
+</style>

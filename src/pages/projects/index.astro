@@ -12,12 +12,32 @@ const projects = (await getCollection("projects")).sort(
 
 <Layout>
   <MetaPage slot="head" title="Projects" />
+  <header>
+    <h1>Projects</h1>
+    <p>
+      Tools, experiments, and products at different stages of becoming real.
+    </p>
+  </header>
   <ul>
     {projects.map((project) => <ProjectCard project={project} />)}
   </ul>
 </Layout>
 
 <style>
+  header {
+    margin-block-end: var(--space-l);
+
+    h1 {
+      font-size: var(--step-3);
+      font-weight: var(--font-weight-medium);
+    }
+
+    p {
+      margin-block-start: var(--space-2xs);
+      color: var(--muted-foreground);
+    }
+  }
+
   ul {
     display: flex;
     flex-direction: column;

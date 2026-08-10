@@ -1,0 +1,54 @@
+---
+import MetaPage from "@/components/MetaPage.astro"
+import WritingCard from "@/components/WritingCard.astro"
+import Layout from "@/layouts/Layout.astro"
+import { getWriting } from "@/lib/content"
+
+const entries = await getWriting({ includeDrafts: import.meta.env.DEV })
+---
+
+<Layout>
+  <MetaPage slot="head" title="Writing" />
+  <header>
+    <h1>Writing</h1>
+    <p>Notes about software, automation, creative tools, and making things.</p>
+  </header>
+  {entries.length > 0 ? (
+    <ul>{entries.map((entry) => <WritingCard entry={entry} />)}</ul>
+  ) : (
+    <empty-state>
+      <p>The first pieces are being edited.</p>
+      <p>Drafts stay private until they are worth your time.</p>
+    </empty-state>
+  )}
+</Layout>
+
+<style>
+  header {
+    margin-block-end: var(--space-l);
+
+    h1 {
+      font-size: var(--step-3);
+      font-weight: var(--font-weight-medium);
+    }
+
+    p {
+      margin-block-start: var(--space-2xs);
+      color: var(--muted-foreground);
+    }
+  }
+
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-m);
+  }
+
+  empty-state {
+    display: block;
+    padding: var(--space-m);
+    color: var(--muted-foreground);
+    background: var(--muted);
+    border-radius: var(--radius-md);
+  }
+</style>

@@ -1,0 +1,64 @@
+---
+import MetaPage from "@/components/MetaPage.astro"
+import Layout from "@/layouts/Layout.astro"
+import { withBase } from "@/lib/utils"
+---
+
+<Layout>
+  <MetaPage
+    slot="head"
+    title="Toys"
+    description="Small interactive tools and creative experiments from FALLBRO."
+  />
+  <header>
+    <h1>Toys</h1>
+    <p>Small tools with narrow rules, made to see what happens.</p>
+  </header>
+  <ul>
+    <li>
+      <a href={withBase("/toys/glyph8")}>Glyph8</a>
+      <p>An 8×8 glyph maker built from two color masks and transparency.</p>
+      <span>In development</span>
+    </li>
+  </ul>
+</Layout>
+
+<style>
+  header {
+    margin-block-end: var(--space-l);
+
+    h1 {
+      font-size: var(--step-3);
+      font-weight: var(--font-weight-medium);
+    }
+
+    p {
+      margin-block-start: var(--space-2xs);
+      color: var(--muted-foreground);
+    }
+  }
+
+  li {
+    padding: var(--space-m);
+    background: color-mix(in oklab, var(--accent-soft) 55%, var(--background));
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+
+    a {
+      font-size: var(--step-1);
+      font-weight: var(--font-weight-medium);
+    }
+
+    p {
+      margin-block-start: var(--space-3xs);
+      color: var(--muted-foreground);
+    }
+
+    span {
+      display: inline-block;
+      margin-block-start: var(--space-xs);
+      color: var(--accent-warm);
+      font-size: var(--step--1);
+    }
+  }
+</style>

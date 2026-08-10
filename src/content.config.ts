@@ -1,37 +1,21 @@
 import { glob } from "astro/loaders"
-import { defineCollection, reference } from "astro:content"
+import { defineCollection } from "astro:content"
 import { z } from "astro/zod"
 
-const authors = defineCollection({
+const writing = defineCollection({
   loader: glob({
     pattern: "**/[^_]*.md",
-    base: "./src/content/authors",
-  }),
-  schema: z.object({
-    name: z.string(),
-    pronouns: z.string().optional(),
-    avatar: z.url().or(z.string().startsWith("/")),
-    bio: z.string().optional(),
-    mail: z.email().optional(),
-    socials: z.record(z.string(), z.url()).optional(),
-  }),
-})
-
-const blog = defineCollection({
-  loader: glob({
-    pattern: "**/[^_]*.md",
-    base: "./src/content/blog",
+    base: "./src/content/writing",
   }),
   schema: ({ image }) =>
     z.object({
       title: z.string(),
       description: z.string(),
       date: z.coerce.date(),
-      order: z.number().optional(),
+      updated: z.coerce.date().optional(),
       tags: z.array(z.string()).optional(),
-      authors: z.array(reference("authors")),
       image: image().optional(),
-      draft: z.boolean().optional(),
+      draft: z.boolean().default(false),
     }),
 })
 
@@ -42,9 +26,12 @@ const projects = defineCollection({
   }),
   schema: ({ image }) =>
     z.object({
-      name: z.string(),
-      description: z.string(),
-      link: z.url(),
+      title: z.string(),
+      summary: z.string(),
+      status: z.enum(["active", "prototype", "complete", "paused"]),
+      featured: z.boolean().default(false),
+      repository: z.url().optional(),
+      website: z.url().optional(),
       tags: z.array(z.string()).optional(),
       image: image().optional(),
       startDate: z.coerce.date().optional(),
@@ -52,4 +39,4 @@ const projects = defineCollection({
     }),
 })
 
-export const collections = { blog, authors, projects }
+export const collections = { writing, projects }

@@ -1,0 +1,64 @@
+---
+import { formatDate, withBase } from "@/lib/utils"
+import type { CollectionEntry } from "astro:content"
+
+type Props = { entry: CollectionEntry<"writing"> }
+
+const { entry } = Astro.props
+---
+
+<li>
+  <entry-info>
+    <a href={withBase(`/writing/${entry.id}`)}>{entry.data.title}</a>
+    <entry-meta>
+      <time datetime={entry.data.date.toISOString()}>
+        {formatDate(entry.data.date)}
+      </time>
+      {entry.data.draft && <span data-draft>Draft</span>}
+      {entry.data.tags?.map((tag) => <span>#{tag}</span>)}
+    </entry-meta>
+    <p>{entry.data.description}</p>
+  </entry-info>
+</li>
+
+<style>
+  entry-info {
+    display: flex;
+    flex-direction: column;
+
+    > a {
+      width: fit-content;
+      font-size: var(--step-1);
+      line-height: calc(var(--leading-offset) + 1em);
+      font-weight: var(--font-weight-medium);
+    }
+
+    > p {
+      color: var(--muted-foreground);
+    }
+  }
+
+  entry-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3xs);
+    margin-block: var(--space-3xs);
+    font-size: var(--step--1);
+    color: var(--muted-foreground);
+
+    > * + *::before {
+      content: "·";
+      margin-inline-end: var(--space-3xs);
+    }
+
+    span:not([data-draft]) {
+      color: color-mix(in oklab, var(--muted-foreground) 60%, transparent);
+    }
+
+    [data-draft] {
+      color: var(--accent-warm);
+      font-weight: var(--font-weight-medium);
+    }
+  }
+</style>

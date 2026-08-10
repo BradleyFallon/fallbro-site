@@ -5,23 +5,25 @@ import RSS from "@/assets/icons/rss.svg"
 import Twitter from "@/assets/icons/twitter.svg"
 
 export const SITE = {
-  title: "astro-erudite",
-  description: "An opinionated, unstyled blogging template built with Astro.",
+  title: "FALLBRO",
+  description:
+    "Bradley Fallon's software, experiments, writing, and strange useful things.",
   locale: "en-US",
   dir: "ltr",
-  defaultPageImage: "/static/opengraph-image.png",
-  defaultPostImage: "/static/1200x630.png",
+  defaultPageImage: "/og.png",
+  defaultPostImage: "/og.png",
 } as const
 
 export const NAVIGATION = [
-  { href: "/blog", label: "Blog" },
   { href: "/projects", label: "Projects" },
-  { href: "/authors", label: "Authors" },
+  { href: "/writing", label: "Writing" },
+  { href: "/toys", label: "Toys" },
+  { href: "/about", label: "About" },
 ]
 
 export const SOCIALS: { href: string; label: string; icon: SvgComponent }[] = [
-  { href: "https://github.com/jktrn", label: "GitHub", icon: GitHub },
-  { href: "https://twitter.com/enscrbe", label: "Twitter", icon: Twitter },
-  { href: "mailto:jason@enscribe.dev", label: "Email", icon: Email },
+  { href: "https://github.com/BradleyFallon", label: "GitHub", icon: GitHub },
+  { href: "https://twitter.com/fallbro", label: "X / Twitter", icon: Twitter },
+  { href: "mailto:bradley.fallon@gmail.com", label: "Email", icon: Email },
   { href: "/rss.xml", label: "RSS", icon: RSS },
 ]

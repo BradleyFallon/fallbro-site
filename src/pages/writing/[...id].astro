@@ -1,0 +1,125 @@
+---
+import MetaPost from "@/components/MetaPost.astro"
+import ScrollToTop from "@/components/ScrollToTop.astro"
+import TableOfContents from "@/components/TableOfContents.astro"
+import Layout from "@/layouts/Layout.astro"
+import { getWriting } from "@/lib/content"
+import { formatDate, withBase } from "@/lib/utils"
+import { Image } from "astro:assets"
+import { render, type CollectionEntry } from "astro:content"
+
+export async function getStaticPaths() {
+  const entries = await getWriting({ includeDrafts: import.meta.env.DEV })
+  return entries.map((entry) => ({
+    params: { id: entry.id },
+    props: { entry },
+  }))
+}
+
+type Props = { entry: CollectionEntry<"writing"> }
+
+const { entry } = Astro.props
+const { Content, headings } = await render(entry)
+const hasToc = headings.some(
+  ({ depth, text }) => depth >= 2 && depth <= 4 && text.trim(),
+)
+const sections = [
+  {
+    id: undefined,
+    label: entry.data.title,
+    open: true,
+    headings: headings.filter(
+      ({ depth, text }) => depth >= 2 && depth <= 4 && text.trim(),
+    ),
+  },
+]
+---
+
+<Layout crumbs={[{ label: entry.data.title, href: `/writing/${entry.id}` }]}>
+  <MetaPost slot="head" post={entry} />
+  {hasToc && (
+    <TableOfContents
+      slot="toc"
+      title={entry.data.title}
+      sections={sections}
+    />
+  )}
+  <ScrollToTop slot="actions" />
+  <article>
+    <header>
+      {entry.data.draft && <p data-draft>Private working draft</p>}
+      <h1>{entry.data.title}</h1>
+      <post-meta>
+        <span>Bradley Fallon</span>
+        <time datetime={entry.data.date.toISOString()}>
+          {formatDate(entry.data.date)}
+        </time>
+        {entry.data.tags?.map((tag) => <a href={withBase(`/tags/${tag}`)}>#{tag}</a>)}
+      </post-meta>
+      <p data-description>{entry.data.description}</p>
+    </header>
+    {entry.data.image && (
+      <post-banner>
+        <Image
+          src={entry.data.image}
+          alt={entry.data.title}
+          width={1200}
+          height={630}
+          priority
+        />
+      </post-banner>
+    )}
+    <prose-content><Content /></prose-content>
+  </article>
+</Layout>
+
+<style>
+  header {
+    margin-block-end: var(--space-m);
+
+    [data-draft] {
+      width: fit-content;
+      margin-block-end: var(--space-xs);
+      padding: var(--space-3xs) var(--space-2xs);
+      color: var(--accent-warm);
+      background: var(--accent-soft);
+      border-radius: var(--radius-sm);
+      font-size: var(--step--1);
+      font-weight: var(--font-weight-medium);
+    }
+
+    h1 {
+      font-size: var(--step-3);
+      font-weight: var(--font-weight-medium);
+    }
+
+    [data-description] {
+      margin-block-start: var(--space-2xs);
+      color: var(--muted-foreground);
+    }
+  }
+
+  post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3xs);
+    margin-block-start: var(--space-3xs);
+    color: var(--muted-foreground);
+    font-size: var(--step--1);
+
+    > * + *::before {
+      content: "·";
+      margin-inline-end: var(--space-3xs);
+    }
+  }
+
+  post-banner {
+    display: block;
+    margin-block-end: var(--space-m);
+
+    :global(img) {
+      width: 100%;
+      height: auto;
+    }
+  }
+</style>

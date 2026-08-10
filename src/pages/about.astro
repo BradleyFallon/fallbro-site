@@ -1,0 +1,76 @@
+---
+import MetaPage from "@/components/MetaPage.astro"
+import SocialIcons from "@/components/SocialIcons.astro"
+import { SOCIALS } from "@/consts"
+import Layout from "@/layouts/Layout.astro"
+---
+
+<Layout>
+  <MetaPage
+    slot="head"
+    title="About"
+    description="About Bradley Fallon and FALLBRO."
+  />
+  <article>
+    <header>
+      <p>Bradley Fallon</p>
+      <h1>Software engineer, creative technologist, and builder.</h1>
+    </header>
+    <prose-content>
+      <p>
+        I build software that helps people understand complicated work, remove
+        unnecessary steps, and turn useful ideas into practical tools.
+      </p>
+      <p>
+        FALLBRO is my personal workbench: part portfolio, part writing archive,
+        and part shelf for experiments that do not need to become companies. The
+        work ranges from workflow automation and AI-assisted systems to chess
+        tools, creative software, and deliberately small toys.
+      </p>
+      <p>
+        I am also developing a practical automation consulting practice. It is
+        related to the thinking documented here, but FALLBRO remains broader
+        than that business.
+      </p>
+    </prose-content>
+    <contact-block>
+      <h2>Elsewhere</h2>
+      <SocialIcons links={SOCIALS} />
+    </contact-block>
+  </article>
+</Layout>
+
+<style>
+  header {
+    margin-block-end: var(--space-l);
+
+    p {
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: var(--step--1);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    h1 {
+      max-width: 20ch;
+      margin-block-start: var(--space-xs);
+      font-size: var(--step-3);
+      font-weight: var(--font-weight-medium);
+      text-wrap: balance;
+    }
+  }
+
+  contact-block {
+    display: block;
+    margin-block-start: var(--space-xl);
+    padding-block-start: var(--space-s);
+    border-block-start: 1px solid var(--border);
+
+    h2 {
+      margin-block-end: var(--space-xs);
+      font-size: var(--step-1);
+      font-weight: var(--font-weight-medium);
+    }
+  }
+</style>

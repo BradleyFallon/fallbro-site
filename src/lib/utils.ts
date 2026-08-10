@@ -7,9 +7,11 @@ export function formatDate(date: Date): string {
   }).format(date)
 }
 
-export const isSubpost = (id: string) => id.includes("/")
-
-export const subpostSlug = (id: string) => id.split("/")[1]
+export const withBase = (path: string) => {
+  const base = import.meta.env.BASE_URL.replace(/\/$/, "")
+  const normalized = path.startsWith("/") ? path : `/${path}`
+  return `${base}${normalized}` || "/"
+}
 
 export const normalizePath = (pathname: string) => {
   try {

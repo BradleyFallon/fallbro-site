@@ -1,0 +1,115 @@
+---
+import { withBase } from "@/lib/utils"
+
+const enabled = import.meta.env.PUBLIC_BSA_ENABLED === "true"
+const zoneId = import.meta.env.PUBLIC_BSA_ZONE_ID
+const scriptSrc = import.meta.env.PUBLIC_BSA_SCRIPT_SRC
+const canLoadNetwork = enabled && zoneId && scriptSrc
+---
+
+<toy-ad data-network-enabled={canLoadNetwork || undefined}>
+  <div data-live-ad id={zoneId ? `bsap_${zoneId}` : undefined} hidden></div>
+  <a data-house-ad href={withBase("/projects")}>
+    <span>Sponsored</span>
+    <strong>Made by FALLBRO</strong>
+    <small>Practical tools, odd experiments, and work in progress →</small>
+  </a>
+</toy-ad>
+
+{canLoadNetwork && (
+  <script is:inline data-src={scriptSrc}>
+    const host = document.currentScript?.previousElementSibling
+    const live = host?.querySelector("[data-live-ad]")
+    const house = host?.querySelector("[data-house-ad]")
+    const script = document.createElement("script")
+    script.async = true
+    const source = document.currentScript?.dataset.src
+    if (!source) throw new Error("Missing ad script source")
+    script.src = source
+    script.addEventListener("load", function () {
+      window.setTimeout(function () {
+        if (live?.childElementCount) {
+          live.hidden = false
+          if (house instanceof HTMLElement) house.hidden = true
+        }
+      }, 500)
+    })
+    document.head.append(script)
+  </script>
+)}
+
+<style>
+  toy-ad {
+    display: block;
+    width: min(100%, 29rem);
+    min-height: 4.5rem;
+    margin: var(--space-xl) auto 0;
+  }
+
+  [data-house-ad],
+  [data-live-ad] {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 4.5rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: color-mix(in oklab, var(--muted) 75%, var(--background));
+  }
+
+  [data-house-ad] {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0 var(--space-xs);
+    align-items: center;
+    padding: var(--space-xs) var(--space-s);
+    color: var(--foreground);
+    text-decoration: none;
+
+    span {
+      grid-row: 1 / 3;
+      align-self: stretch;
+      display: flex;
+      align-items: center;
+      padding-inline-end: var(--space-xs);
+      border-inline-end: 1px solid var(--border);
+      color: var(--muted-foreground);
+      font-family: var(--font-mono);
+      font-size: var(--step--2);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    strong {
+      font-size: var(--step--1);
+      font-weight: var(--font-weight-medium);
+    }
+
+    small {
+      color: var(--muted-foreground);
+      font-size: var(--step--2);
+    }
+
+    &:hover {
+      border-color: var(--accent);
+    }
+  }
+
+  [hidden] {
+    display: none;
+  }
+
+  @media (width >= 64rem) {
+    toy-ad {
+      position: fixed;
+      z-index: 5;
+      inset-block-end: max(var(--space-s), env(safe-area-inset-bottom));
+      inset-inline-start: 50%;
+      margin: 0;
+      transform: translateX(-50%);
+    }
+
+    :global(body:has(toy-ad)) {
+      padding-block-end: 7rem;
+    }
+  }
+</style>

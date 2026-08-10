@@ -1,5 +1,5 @@
 ---
-import BlogCard from "@/components/BlogCard.astro"
+import WritingCard from "@/components/WritingCard.astro"
 import MetaPage from "@/components/MetaPage.astro"
 import Layout from "@/layouts/Layout.astro"
 import { getTags } from "@/lib/content"
@@ -13,7 +13,7 @@ export async function getStaticPaths() {
   }))
 }
 
-type Props = { tag: string; posts: CollectionEntry<"blog">[] }
+type Props = { tag: string; posts: CollectionEntry<"writing">[] }
 
 const { tag, posts } = Astro.props
 ---
@@ -31,7 +31,7 @@ const { tag, posts } = Astro.props
     noindex
   />
   <ul>
-    {posts.map((post) => <BlogCard post={post} />)}
+    {posts.map((post) => <WritingCard entry={post} />)}
   </ul>
 </Layout>
 

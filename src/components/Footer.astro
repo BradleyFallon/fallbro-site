@@ -1,13 +1,14 @@
 ---
 import SocialIcons from "@/components/SocialIcons.astro"
 import { SITE, SOCIALS } from "@/consts"
+import { withBase } from "@/lib/utils"
 ---
 
 <footer>
-  <p>
-    &copy; {new Date().getFullYear()}
-    {SITE.title}
-  </p>
+  <footer-meta>
+    <p>&copy; {new Date().getFullYear()} {SITE.title}</p>
+    <a href={withBase("/privacy")}>Privacy</a>
+  </footer-meta>
   <SocialIcons links={SOCIALS} />
 </footer>
 
@@ -26,6 +27,17 @@ import { SITE, SOCIALS } from "@/consts"
     p {
       font-size: var(--step--1);
       color: var(--muted-foreground);
+    }
+
+    footer-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+
+      a {
+        font-size: var(--step--1);
+        color: var(--muted-foreground);
+      }
     }
   }
 </style>

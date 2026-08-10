@@ -8,32 +8,20 @@ import {
 import { temmlMath } from "./src/lib/math"
 import { calloutDirective } from "./src/lib/callout"
 import { externalLinks } from "./src/lib/external-links"
-import { headingNamespace } from "./src/lib/heading-namespace"
 import { headingAnchors } from "./src/lib/heading-anchors"
 
 export default defineConfig({
-  site: "https://astro-erudite.vercel.app",
+  site: "https://bradleyfallon.github.io",
+  base: "/fallbro-site",
   compressHTML: true,
   prefetch: { prefetchAll: true },
-  integrations: [
-    sitemap({
-      filter: (page) =>
-        !/\/blog\/[^/]+\/[^/]+\/?$/.test(page) &&
-        !/\/authors\/[^/]+\/?$/.test(page) &&
-        !page.includes("/tags/"),
-    }),
-  ],
+  integrations: [sitemap({ filter: (page) => !page.includes("/tags/") })],
   markdown: {
     syntaxHighlight: false,
     processor: satteri({
       features: { directive: true, math: true },
       mdastPlugins: [calloutDirective, inlineExpressiveCode, temmlMath],
-      hastPlugins: [
-        externalLinks,
-        blockExpressiveCode,
-        headingNamespace,
-        headingAnchors,
-      ],
+      hastPlugins: [externalLinks, blockExpressiveCode, headingAnchors],
     }),
   },
 })

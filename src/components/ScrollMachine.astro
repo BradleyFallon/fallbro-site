@@ -1,0 +1,278 @@
+<scroll-machine aria-hidden="true"></scroll-machine>
+
+<script>
+  import {
+    Bodies,
+    Body,
+    Composite,
+    Constraint,
+    Engine,
+    Render,
+  } from "matter-js"
+
+  const host = document.querySelector("scroll-machine")
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)")
+
+  if (host instanceof HTMLElement && !reduceMotion.matches) {
+    const engine = Engine.create({ enableSleeping: true })
+    const render = Render.create({
+      element: host,
+      engine,
+      options: {
+        background: "transparent",
+        height: window.innerHeight,
+        pixelRatio: Math.min(window.devicePixelRatio, 2),
+        width: window.innerWidth,
+        wireframes: false,
+      },
+    })
+
+    let ball: Body
+    let frame = 0
+    let lastFrame = performance.now()
+    let lastScrollY = window.scrollY
+    let cycle = 0
+    let energy = 0
+    let resizeTimer = 0
+
+    const styles = {
+      amber: "#ee9b00",
+      burgundy: "#9b2226",
+      orange: "#ca6702",
+      seafoam: "#94d2bd",
+      teal: "#0a9396",
+      track: "#005f73",
+    }
+
+    const machineScale = () =>
+      Math.min(Math.max(window.innerWidth / 1100, 0.68), 1.2)
+
+    const makeTrack = (x: number, y: number, width: number, angle: number) =>
+      Bodies.rectangle(x, y, width, 8 * machineScale(), {
+        angle,
+        isStatic: true,
+        render: {
+          fillStyle: styles.track,
+          strokeStyle: styles.seafoam,
+          lineWidth: 1,
+        },
+      })
+
+    const buildMachine = () => {
+      const width = window.innerWidth
+      const height = window.innerHeight
+      const scale = machineScale()
+      const world = engine.world
+
+      Composite.clear(world, false, true)
+      engine.gravity.y = 0.82
+      engine.gravity.scale = 0.001
+
+      Render.setSize(render, width, height)
+      Render.setPixelRatio(render, Math.min(window.devicePixelRatio, 2))
+
+      const tracks = [
+        makeTrack(width * 0.27, height * 0.19, width * 0.42, 0.1),
+        makeTrack(width * 0.7, height * 0.39, width * 0.56, -0.1),
+        makeTrack(width * 0.29, height * 0.59, width * 0.52, 0.09),
+        makeTrack(width * 0.67, height * 0.83, width * 0.58, 0),
+      ]
+
+      ball = Bodies.circle(width * 0.09, height * 0.11, 13 * scale, {
+        friction: 0.012,
+        frictionAir: 0.004,
+        restitution: 0.38,
+        isStatic: true,
+        render: {
+          fillStyle: styles.amber,
+          strokeStyle: styles.burgundy,
+          lineWidth: 2,
+        },
+      })
+
+      const dominos = Array.from(
+        { length: width < 640 ? 6 : 10 },
+        (_, index) => {
+          const count = width < 640 ? 6 : 10
+          const start = width * 0.48
+          const step = (width * 0.3) / count
+
+          return Bodies.rectangle(
+            start + index * step,
+            height * 0.79,
+            8 * scale,
+            50 * scale,
+            {
+              chamfer: { radius: 2 * scale },
+              friction: 0.45,
+              restitution: 0.08,
+              render: {
+                fillStyle: index % 3 === 0 ? styles.orange : styles.seafoam,
+              },
+            },
+          )
+        },
+      )
+
+      const lever = Bodies.rectangle(
+        width * 0.84,
+        height * 0.73,
+        Math.min(width * 0.19, 210),
+        9 * scale,
+        {
+          chamfer: { radius: 3 * scale },
+          frictionAir: 0.025,
+          render: { fillStyle: styles.teal },
+        },
+      )
+      const leverPin = Constraint.create({
+        bodyB: lever,
+        length: 0,
+        pointA: { x: width * 0.84, y: height * 0.73 },
+        stiffness: 0.92,
+        render: {
+          strokeStyle: styles.burgundy,
+          lineWidth: 3,
+        },
+      })
+
+      const pendulum = Bodies.circle(width * 0.91, height * 0.66, 20 * scale, {
+        frictionAir: 0.006,
+        restitution: 0.45,
+        render: {
+          fillStyle: styles.burgundy,
+          strokeStyle: styles.amber,
+          lineWidth: 2,
+        },
+      })
+      const pendulumCord = Constraint.create({
+        bodyB: pendulum,
+        length: height * 0.2,
+        pointA: { x: width * 0.91, y: height * 0.44 },
+        stiffness: 0.98,
+        render: {
+          strokeStyle: styles.seafoam,
+          lineWidth: 2,
+        },
+      })
+
+      const boundaries = [
+        Bodies.rectangle(-40, height / 2, 80, height * 2, {
+          isStatic: true,
+          render: { visible: false },
+        }),
+        Bodies.rectangle(width + 40, height / 2, 80, height * 2, {
+          isStatic: true,
+          render: { visible: false },
+        }),
+      ]
+
+      Composite.add(world, [
+        ...tracks,
+        ...boundaries,
+        ...dominos,
+        ball,
+        lever,
+        leverPin,
+        pendulum,
+        pendulumCord,
+      ])
+    }
+
+    const releaseBall = (direction: number) => {
+      Body.setStatic(ball, false)
+      Body.setVelocity(ball, {
+        x: Math.max(2.2, Math.abs(direction) * 0.08),
+        y: 0,
+      })
+    }
+
+    const onScroll = () => {
+      const nextScrollY = window.scrollY
+      const delta = nextScrollY - lastScrollY
+      const nextCycle = Math.floor(
+        nextScrollY / Math.max(window.innerHeight * 0.72, 1),
+      )
+
+      if (nextCycle !== cycle) {
+        cycle = nextCycle
+        buildMachine()
+      }
+
+      if (ball.isStatic) releaseBall(delta)
+
+      energy = Math.min(1, energy + Math.abs(delta) / 110)
+      Body.applyForce(ball, ball.position, {
+        x: Math.max(-0.018, Math.min(0.018, delta * 0.000035)),
+        y: -Math.min(0.006, Math.abs(delta) * 0.000008),
+      })
+
+      lastScrollY = nextScrollY
+    }
+
+    const onResize = () => {
+      window.clearTimeout(resizeTimer)
+      resizeTimer = window.setTimeout(buildMachine, 150)
+    }
+
+    const tick = (time: number) => {
+      const delta = Math.min(time - lastFrame, 32)
+      engine.timing.timeScale = 0.18 + energy * 0.82
+      Engine.update(engine, delta)
+      Render.world(render)
+      energy *= 0.94
+      lastFrame = time
+      frame = window.requestAnimationFrame(tick)
+    }
+
+    const cleanup = () => {
+      window.cancelAnimationFrame(frame)
+      window.clearTimeout(resizeTimer)
+      window.removeEventListener("scroll", onScroll)
+      window.removeEventListener("resize", onResize)
+      Render.stop(render)
+      Composite.clear(engine.world, false, true)
+      render.canvas.remove()
+    }
+
+    buildMachine()
+    window.addEventListener("scroll", onScroll, { passive: true })
+    window.addEventListener("resize", onResize, { passive: true })
+    window.addEventListener("pagehide", cleanup, { once: true })
+    frame = window.requestAnimationFrame(tick)
+  }
+</script>
+
+<style>
+  scroll-machine {
+    position: fixed;
+    z-index: 0;
+    inset: 0;
+    display: block;
+    overflow: hidden;
+    pointer-events: none;
+    opacity: 0.2;
+
+    :global(canvas) {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      opacity: 0.3;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      display: none;
+    }
+  }
+
+  :global(html[data-theme="light"]) scroll-machine {
+    opacity: 0.2;
+  }
+
+  :global(html[data-theme="dark"]) scroll-machine {
+    opacity: 0.3;
+  }
+</style>

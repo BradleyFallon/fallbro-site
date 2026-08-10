@@ -30,6 +30,7 @@ const { crumbs } = Astro.props
     <slot name="head" />
   </MetaHead>
   <body>
+    <slot name="background" />
     <page-grid>
       <page-header>
         <page-nav>
@@ -52,6 +53,7 @@ const { crumbs } = Astro.props
 <style>
   page-grid {
     position: relative;
+    z-index: 1;
     isolation: isolate;
     display: grid;
     grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));

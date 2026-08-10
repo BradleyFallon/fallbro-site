@@ -4,15 +4,15 @@ import ToyAd from "@/components/ToyAd.astro"
 import Layout from "@/layouts/Layout.astro"
 ---
 
-<Layout crumbs={[{ label: "Glyph8", href: "/toys/glyph8" }]}>
+<Layout crumbs={[{ label: "8glyph", href: "/toys/8glyph" }]}>
   <MetaPage
     slot="head"
-    title="Glyph8"
+    title="8glyph"
     description="An 8×8 glyph maker in development at FALLBRO."
   />
   <header>
     <p>In development</p>
-    <h1>Glyph8</h1>
+    <h1>8glyph</h1>
     <h2>An 8×8 glyph maker.</h2>
   </header>
   <glyph-preview aria-label="A decorative eight by eight grid preview">
@@ -22,13 +22,19 @@ import Layout from "@/layouts/Layout.astro"
   </glyph-preview>
   <prose-content>
     <p>
-      Every mark in Glyph8 is made from 64 cells, two color masks, and
+      Every mark in 8glyph is made from 64 cells, two color masks, and
       transparency. The first version will make crisp, resolution-independent
       SVGs without trying to become a general-purpose pixel editor.
     </p>
     <p>
       The tool will live here once its standalone repository has a working first
-      version.
+      version. For now, follow its progress in the
+      <a
+        href="https://github.com/BradleyFallon/8glyph"
+        target="_blank"
+        rel="noopener noreferrer"
+        >8glyph repository</a
+      >.
     </p>
   </prose-content>
   <ToyAd />

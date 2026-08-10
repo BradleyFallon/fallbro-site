@@ -52,3 +52,18 @@ Confirmed public links are defined in `src/consts.ts`. Do not add an unanswered 
 ## Toy advertising
 
 `ToyAd.astro` is included only on individual toy pages. Without live network configuration it displays a local house ad. BuySellAds configuration belongs in deployment variables, never in article content or committed secrets.
+
+## Toy source
+
+Standalone toy repositories are included as Git submodules under `toys`. The
+8glyph source lives at `toys/8glyph` and its public repository is
+`https://github.com/BradleyFallon/8glyph`.
+
+Clone the site with its toy source:
+
+```sh
+git clone --recurse-submodules https://github.com/BradleyFallon/fallbro-site.git
+```
+
+After a normal clone, initialize or refresh the included repositories with
+`git submodule update --init --recursive`.

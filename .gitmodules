@@ -1,0 +1,3 @@
+[submodule "toys/8glyph"]
+	path = toys/8glyph
+	url = https://github.com/BradleyFallon/8glyph.git

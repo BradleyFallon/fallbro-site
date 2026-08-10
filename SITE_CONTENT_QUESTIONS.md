@@ -194,15 +194,15 @@ Confirmed domain or leave GitHub Pages for now?:
 Do you want privacy-respecting analytics? If so, preferred provider:
 
 
-## Glyph8
+## 8glyph
 
-Repository URL when created:
+Repository URL: https://github.com/BradleyFallon/8glyph
 
 
 Target for the first usable version:
 
 
-Should the toy be embedded from a submodule, package, or separate deployment? (Current recommendation: submodule source imported by the Astro page.)
+Current integration: Git submodule at `toys/8glyph`; its source can be imported by the Astro toy page once the first usable version exists.
 
 
 ## BuySellAds
@@ -237,4 +237,3 @@ Anything on the current site that feels inaccurate, too polished, too corporate,
 
 
 What should a visitor remember after leaving FALLBRO?:
-

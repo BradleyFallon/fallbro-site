@@ -13,6 +13,10 @@ npm install
 npm run dev
 ```
 
+The repository includes standalone toy source as Git submodules. When cloning
+from scratch, use `git clone --recurse-submodules`, or run
+`git submodule update --init --recursive` after a normal clone.
+
 Useful commands:
 
 ```sh
@@ -32,6 +36,7 @@ The production build is configured for:
 - Project narratives live in `src/content/projects`.
 - Draft articles appear during local development and are excluded from production.
 - Images for an article may be stored next to its Markdown file.
+- Standalone toy repositories live as Git submodules under `toys`.
 
 See [CONTENT_GUIDE.md](CONTENT_GUIDE.md) for the writing and publication workflow. Open questions about biography, social links, projects, advertising, and the eventual custom domain live in [SITE_CONTENT_QUESTIONS.md](SITE_CONTENT_QUESTIONS.md).
 
